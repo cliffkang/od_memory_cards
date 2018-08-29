@@ -1,3 +1,7 @@
+const { 
+    startSession 
+} = require ('../controllers');
+
 module.exports = server => {
-    server.route('').get();
+    server.route('/newSession').get(startSession);
 }

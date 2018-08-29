@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
+import axios from 'axios';
 
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -7,6 +8,8 @@ import Button from '@material-ui/core/Button';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
+
+const ROOT_URL = 'http://localhost:5000';
 
 const HomeDiv = styled.div`
 `;
@@ -31,7 +34,10 @@ class Home extends Component {
     };
 
     handleStartClick = () => {
-        this.setState({})
+        axios
+            .get(`${ROOT_URL}/newSession`)
+            .then(firstWord => this.setState({ currentWord: firstWord }))
+            .catch(err => console.error({ error: `error initiating new session, ${err}` }));
     }
 
     handleChange = event => {
