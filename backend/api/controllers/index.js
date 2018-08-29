@@ -1,14 +1,15 @@
+const Session = require('../models/SessionModel');
 
 const startSession = (req,res) => {
     // select a random 10
     const spanishWords = Object.keys(potentialWords);
     const len = spanishWords.length;
-    const randomWords = [];
+    const newSession = new Session;
     const taken = {};
-    while (randomWords.length !== 10) {
+    while (newSession.length !== 10) {
         const randomWord = spanishWords[Math.floor(Math.random() * len)];
         if (taken[randomWord]) continue;
-        randomWords.push({
+        newSession.randomWords.push({
             spanish: randomWord,
             english: potentialWords[randomWord],
             M: 1,
@@ -16,7 +17,17 @@ const startSession = (req,res) => {
         taken[randomWord] = 1;
     }
 
-
+    // save session
+    newSession.index = 0;
+    newSession.save()
+        .then(saved => {
+            console.log('saved', saved);
+            const word = saved.randomWords[saved.index];
+            res.json({ word });
+        })
+        .catch(error => {
+            res.status(500).send({ error });
+        })
 };
 
 const potentialWords = {
