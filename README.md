@@ -10,3 +10,6 @@
 5. Set up Mlab + create Session Model + finish startSession endpoint: save session and send first word (30 mins)
 6. Fixed bugs from #5 (15 mins)
 7. Added _id to data sent back with first word + cleaned up some code by renaming items (15 mins)
+
+### Day 3
+8. Got the guess submit working + added a countdown timer component (45 mins)

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import ReactCountdownClock from 'react-countdown-clock';
 
 import { withStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
-import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import Typography from '@material-ui/core/Typography';
 
@@ -32,6 +32,7 @@ class Home extends Component {
         guess: '',
         currentWord: '',
         _id: '',
+        correct: null,
     };
 
     handleStartClick = () => {
@@ -45,10 +46,33 @@ class Home extends Component {
     }
 
     handleChange = event => {
+        if(event.keyCode === 13 && event.shiftKey === false) {
+            this.handleGuess();
+        }
         this.setState({ guess: event.target.value });
     };
 
-    handleGuess = event => {
+    handleGuess = () => {
+        console.log('coming in here on enter key press?');
+        let { currentWord } = this.state;
+        // sanitize the input a little bit
+        // also made words all lowercase on backend
+        const guess = this.state.guess.trim().toLowerCase();
+        let correct;
+        // check if guess is right or not
+        if (guess === currentWord.english) {
+            correct = true;
+            currentWord.M = 1;
+        } else {
+            correct = false;
+            currentWord.M *= 2;
+        }
+        this.setState({ correct, currentWord }, () => {
+            
+        });
+    }
+
+    handleNextWord = event => {
 
     }
 
@@ -75,8 +99,10 @@ class Home extends Component {
                         <Typography variant="title" color="inherit" style={{ margin: '12px' }}>
                             {this.state.currentWord.spanish}
                         </Typography>
-                        <FormControl fullWidth className={classes.margin} onSubmit={this.handleGuess}>
+                        <form onSubmit={this.handleGuess}>
                             <TextField
+                                autoFocus
+                                fullWidth
                                 id="guess"
                                 label="what does this mean? (press enter to guess)"
                                 value={this.state.guess}
@@ -88,7 +114,20 @@ class Home extends Component {
                                 }}
                                 margin="normal"
                             />
-                        </FormControl>
+                        </form>
+                    </Typography>
+                : null }
+                {this.state.correct ? 
+                    <Typography component="div" style={{ padding: 8 * 3 }}>
+                        <Typography variant="title" color="inherit" style={{ margin: '12px' }}>
+                            {this.state.correct ? 'Correct!' : 'Wrong'} Next word in:
+                        </Typography>
+                        <ReactCountdownClock seconds={3}
+                            color="#6ec6ff"
+                            alpha={0.9}
+                            size={50}
+                            // onComplete={this.handleNextWord}
+                        />
                     </Typography>
                 : null }
 			</HomeDiv>
