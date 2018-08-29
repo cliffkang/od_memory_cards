@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const routes = require('./api/routes');
+const morgan = require('morgan');
 
 const server = express();
 const corsOptions = {
