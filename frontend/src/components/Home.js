@@ -31,12 +31,16 @@ class Home extends Component {
     state = {
         guess: '',
         currentWord: '',
+        _id: '',
     };
 
     handleStartClick = () => {
         axios
             .get(`${ROOT_URL}/newSession`)
-            .then(firstWord => this.setState({ currentWord: firstWord.data.word }))
+            .then(firstWord => {
+                const { _id, currentWord } = firstWord.data;
+                this.setState({ _id, currentWord });
+            })
             .catch(err => console.error({ error: `error initiating new session, ${err}` }));
     }
 

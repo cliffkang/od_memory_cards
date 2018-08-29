@@ -21,8 +21,9 @@ const startSession = (req,res) => {
     newSession.index = 0;
     newSession.save()
         .then(saved => {
-            const word = saved.randomWords[saved.index];
-            res.status(200).send({ word });
+            const currentWord = saved.randomWords[saved.index];
+            const { _id } = saved;
+            res.status(200).send({ currentWord, _id });
         })
         .catch(error => {
             res.status(500).send({ error });
