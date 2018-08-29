@@ -8,3 +8,4 @@
 3. Set up basic frontend (60 mins)
 4. Create word bank + started startSession endpoint: pick 10 random words (60 mins)
 5. Set up Mlab + create Session Model + finish startSession endpoint: save session and send first word (30 mins)
+6. Fixed bugs from #5 (15 mins)

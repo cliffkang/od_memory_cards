@@ -30,19 +30,18 @@ const styles = theme => ({
 class Home extends Component {
     state = {
         guess: '',
-        currentWord: 'vocab',
+        currentWord: '',
     };
 
     handleStartClick = () => {
         axios
             .get(`${ROOT_URL}/newSession`)
-            .then(firstWord => this.setState({ currentWord: firstWord }))
+            .then(firstWord => this.setState({ currentWord: firstWord.data.word }))
             .catch(err => console.error({ error: `error initiating new session, ${err}` }));
     }
 
     handleChange = event => {
-        const guess = event.target.value;
-        this.setState({ guess });
+        this.setState({ guess: event.target.value });
     };
 
     handleGuess = event => {
@@ -67,25 +66,27 @@ class Home extends Component {
                         Let's practice some vocabulary!
                     </Typography>
                 </AppBar>
-                <Typography component="div" style={{ padding: 8 * 3 }}>
-                    <Typography variant="title" color="inherit" style={{ margin: '12px' }}>
-                        {this.state.currentWord}
+                {this.state.currentWord ? 
+                    <Typography component="div" style={{ padding: 8 * 3 }}>
+                        <Typography variant="title" color="inherit" style={{ margin: '12px' }}>
+                            {this.state.currentWord.spanish}
+                        </Typography>
+                        <FormControl fullWidth className={classes.margin} onSubmit={this.handleGuess}>
+                            <TextField
+                                id="guess"
+                                label="what does this mean? (press enter to guess)"
+                                value={this.state.guess}
+                                onChange={this.handleChange}
+                                type="string"
+                                className={classes.textField}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                                margin="normal"
+                            />
+                        </FormControl>
                     </Typography>
-                    <FormControl fullWidth className={classes.margin} onSubmit={this.handleGuess}>
-                        <TextField
-                            id="guess"
-                            label="what does this mean? (press enter to guess)"
-                            value={this.state.guess}
-                            onChange={this.handleChange}
-                            type="string"
-                            className={classes.textField}
-                            InputLabelProps={{
-                                shrink: true,
-                            }}
-                            margin="normal"
-                        />
-                    </FormControl>
-                </Typography>
+                : null }
 			</HomeDiv>
 		);
 	}

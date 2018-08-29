@@ -6,7 +6,7 @@ const startSession = (req,res) => {
     const len = spanishWords.length;
     const newSession = new Session;
     const taken = {};
-    while (newSession.length !== 10) {
+    while (newSession.randomWords.length !== 10) {
         const randomWord = spanishWords[Math.floor(Math.random() * len)];
         if (taken[randomWord]) continue;
         newSession.randomWords.push({
@@ -16,18 +16,17 @@ const startSession = (req,res) => {
         });
         taken[randomWord] = 1;
     }
-
-    // save session
+    
+    // save session and send first word in array
     newSession.index = 0;
     newSession.save()
         .then(saved => {
-            console.log('saved', saved);
             const word = saved.randomWords[saved.index];
-            res.json({ word });
+            res.status(200).send({ word });
         })
         .catch(error => {
             res.status(500).send({ error });
-        })
+        });
 };
 
 const potentialWords = {
