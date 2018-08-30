@@ -15,3 +15,4 @@
 8. Got the guess submit working + added a countdown timer component (45 mins)
 9. Fixed up the post-guess components for UX purposes (60 mins)
 10. Added nextWord endpoint: frontend, route, server endpoint (60 mins)
+11. Edge case: when value of M is greater than the size of words, use .push() instead of .splice() (5 mins)

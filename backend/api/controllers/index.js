@@ -1,4 +1,5 @@
 const Session = require('../models/SessionModel');
+const wordsPerSession = 10;
 
 const startSession = (req,res) => {
     // select a random 10
@@ -6,7 +7,7 @@ const startSession = (req,res) => {
     const len = spanishWords.length;
     const newSession = new Session;
     const taken = {};
-    while (newSession.randomWords.length !== 10) {
+    while (newSession.randomWords.length !== wordsPerSession) {
         const randomWord = spanishWords[Math.floor(Math.random() * len)];
         if (taken[randomWord]) continue;
         newSession.randomWords.push({
@@ -35,11 +36,14 @@ const nextWord = (req,res) => {
     if (_id && lastWord) {
         Session.findOne({ _id })
             .then(result => {
+                // move first word according to M value received
                 const { randomWords } = result;
                 const moveBack = lastWord.currentWord.M;
                 randomWords[0].M = moveBack;
                 const moveWord = randomWords.shift();
-                randomWords.splice(moveBack, 0, moveWord);
+                // if M value greater than the size of the array, pushed and not spliced
+                if (moveBack > wordsPerSession) randomWords.push(moveWord);
+                else randomWords.splice(moveBack, 0, moveWord);
                 Session
                     .findOneAndUpdate({ _id }, { randomWords }, { new: true })
                     .then(saved => {
