@@ -1,5 +1,12 @@
 # od_memory_cards
 
+## API_README
+
+| Method > endpoint       | SEND           | RECEIVE  |
+| ------------- |:-------------:| -----:|
+| 'GET'  > '/newSession'  |       | `{jobs}`
+| 'POST'  > '/newWord'    | `body: { _id, currentWord: { english, spanish, M }}` | `{ _id, currentWord: { english, spanish, M } }`
+
 ### Day 1
 1. Read through and understand problem (30 mins)
 2. Create React App + Node/Express boilerplate (60 mins)
@@ -16,3 +23,4 @@
 9. Fixed up the post-guess components for UX purposes (60 mins)
 10. Added nextWord endpoint: frontend, route, server endpoint (60 mins)
 11. Edge case: when value of M is greater than the size of words, use .push() instead of .splice() (5 mins)
+12. Added API README (10 mins)
