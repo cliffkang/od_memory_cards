@@ -46,14 +46,13 @@ class Home extends Component {
     }
 
     handleChange = event => {
-        if(event.keyCode === 13 && event.shiftKey === false) {
-            this.handleGuess();
-        }
+        event.preventDefault();
+        event.stopPropagation();
         this.setState({ guess: event.target.value });
     };
 
-    handleGuess = () => {
-        console.log('coming in here on enter key press?');
+    handleGuess = e => {
+        e.preventDefault();
         let { currentWord } = this.state;
         // sanitize the input a little bit
         // also made words all lowercase on backend
@@ -62,18 +61,25 @@ class Home extends Component {
         // check if guess is right or not
         if (guess === currentWord.english) {
             correct = true;
-            currentWord.M = 1;
+            currentWord.M *= 2;
         } else {
             correct = false;
-            currentWord.M *= 2;
+            currentWord.M = 1;
         }
-        this.setState({ correct, currentWord }, () => {
-            
-        });
+        console.log('correct/currentWord in handleGuess', correct, currentWord);
+        this.setState({ correct, currentWord });
     }
 
     handleNextWord = event => {
-
+        const { currentWord, _id } = this.state;
+        axios
+            .post(`${ROOT_URL}/nextWord`, { currentWord, _id })
+            .then(newWord => {
+                console.log('newWord returned back in handleNextWord', newWord);
+                const { currentWord } = newWord.data;
+                this.setState({ correct: null, currentWord, guess: '' });
+            })
+            .catch(error => console.error('error getting next word from server', error));
     }
 
 	render() {
@@ -117,16 +123,21 @@ class Home extends Component {
                         </form>
                     </Typography>
                 : null }
-                {this.state.correct ? 
-                    <Typography component="div" style={{ padding: 8 * 3 }}>
+                {this.state.correct !== null ? 
+                    <Typography component="div" style={{ padding: 8 * 3, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <Typography variant="title" color="inherit" style={{ margin: '12px' }}>
-                            {this.state.correct ? 'Correct!' : 'Wrong'} Next word in:
+                            <div style={{ display: 'flex', justifyContent: 'space-around', whiteSpace: 'pre' }}>
+                                {this.state.correct ?
+                                    <div>Correct!   Next word in:</div> : 
+                                    <div>Wrong :(.   Right word was <strong style={{ fontSize: '34px'}}>{this.state.currentWord.english}</strong></div>
+                                }
+                            </div>
                         </Typography>
                         <ReactCountdownClock seconds={3}
                             color="#6ec6ff"
                             alpha={0.9}
-                            size={50}
-                            // onComplete={this.handleNextWord}
+                            size={80}
+                            onComplete={this.handleNextWord}
                         />
                     </Typography>
                 : null }

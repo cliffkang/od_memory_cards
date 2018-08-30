@@ -18,10 +18,9 @@ const startSession = (req,res) => {
     }
     
     // save session and send first word in array
-    newSession.index = 0;
     newSession.save()
         .then(saved => {
-            const currentWord = saved.randomWords[saved.index];
+            const currentWord = saved.randomWords[0];
             const { _id } = saved;
             res.status(200).send({ currentWord, _id });
         })
@@ -29,6 +28,34 @@ const startSession = (req,res) => {
             res.status(500).send({ error });
         });
 };
+
+const nextWord = (req,res) => {
+    const lastWord = req.body;
+    const { _id } = lastWord;
+    if (_id && lastWord) {
+        Session.findOne({ _id })
+            .then(result => {
+                const { randomWords } = result;
+                const moveBack = lastWord.currentWord.M;
+                randomWords[0].M = moveBack;
+                const moveWord = randomWords.shift();
+                randomWords.splice(moveBack, 0, moveWord);
+                Session
+                    .findOneAndUpdate({ _id }, { randomWords }, { new: true })
+                    .then(saved => {
+                        const currentWord = saved.randomWords[0];
+                        const { _id } = saved;
+                        res.status(200).send({ currentWord, _id });
+                    })
+                    .catch(error => {
+                        res.status(500).send({ error });
+                    });
+            })
+            .catch(err => res.status(500).json({ error: 'Error updating the job', err }));
+    } else {
+        res.status(422).send('Please send valid id and/or word');
+    }
+}
 
 const potentialWords = {
     'buenos dias': 'good morning',
@@ -57,4 +84,5 @@ const potentialWords = {
 
 module.exports = {
     startSession,
+    nextWord,
 }

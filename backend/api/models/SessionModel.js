@@ -8,7 +8,6 @@ const SessionSchema = mongoose.Schema(
             english: String,
             M: Number,
         }],
-        index: Number,
     },
     { timestamps: true },
 );

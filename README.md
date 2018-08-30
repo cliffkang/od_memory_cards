@@ -13,3 +13,5 @@
 
 ### Day 3
 8. Got the guess submit working + added a countdown timer component (45 mins)
+9. Fixed up the post-guess components for UX purposes (60 mins)
+10. Added nextWord endpoint: frontend, route, server endpoint (60 mins)
